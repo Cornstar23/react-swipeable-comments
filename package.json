@@ -1,0 +1,36 @@
+{
+  "name": "test-5",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "src/index.js",
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "1.2.22",
+    "@fortawesome/free-solid-svg-icons": "5.10.2",
+    "@fortawesome/react-fontawesome": "0.1.4",
+    "@n8tb1t/use-scroll-position": "1.0.38",
+    "axios": "0.19.0",
+    "create-react-class": "15.6.3",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
+    "react-resize-detector": "4.2.1",
+    "react-scripts": "3.0.1",
+    "react-slider": "0.11.2",
+    "react-swipeable-views": "0.13.3"
+  },
+  "devDependencies": {
+    "typescript": "3.3.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

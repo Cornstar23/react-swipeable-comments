@@ -1,0 +1,180 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  font-family: sans-serif;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+.App > div > div > .react-swipeable-view-container > div {
+  border: 1px solid rgb(99, 99, 99);
+  border-radius: 4px;
+  height: calc(100vh - 50px);
+  background: #e6e6e6;
+  margin: 0 10px;
+  position: relative;
+}
+
+body {
+  overflow-y: hidden;
+}
+
+/* .react-swipeable-view-container:first-child {
+
+    background: #ff0000;
+  
+} */
+
+.comments {
+  transition: all 1s ease-in-out 1s;
+}
+
+.swipeable-views {
+  transition: all 2s ease 1s;
+  /* min-height: 2000px; */
+}
+
+.children-comments {
+  min-height: 100vh;
+}
+
+.children-comments-scrolled {
+  background-color: "blue";
+}
+
+.comment-header {
+  display: flex;
+  background: #eeeeee;
+  border-radius: 4px;
+  margin: 0rem 2rem 0 2rem;
+}
+
+.comment-body {
+  padding: 1rem;
+  background: #fff;
+  z-index: 100;
+}
+
+.comment {
+  border: solid;
+  border-width: 1px;
+  border-radius: 4px;
+  margin: 0 1rem;
+}
+
+.comment-number {
+  color: #dedede;
+  background: #797979;
+  flex-grow: 1;
+  flex-shrink: 0;
+  text-align: center;
+  padding: 0 0.3rem;
+}
+
+.comment-top {
+  position: sticky;
+  top: 0px;
+  border-top-style: none;
+  border-left-style: none;
+  border-right-style: none;
+  margin: 0;
+}
+
+.spacer {
+  height: 10px;
+  background: #b4b4b4;
+  margin: 0rem 4rem 0 4rem;
+  border: black;
+  border-width: 0 1px;
+  border-style: solid;
+}
+
+.disabled {
+  color: #9b9b9b;
+}
+
+.slider {
+  flex-grow: 3;
+  -webkit-appearance: none;
+  height: 20px;
+  background: #adadad;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #111111;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #929292;
+  cursor: pointer;
+}
+
+.loadMoreComments {
+  background-color: rgb(94, 94, 94);
+  border: none;
+  color: rgb(224, 224, 224);
+  padding: 0px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.loadMoreRepliesDiv {
+  display: flex;
+  justify-content: center;
+}
+
+.loadMoreRepliesDiv > button {
+  margin: 10px;
+  padding: 10px 15px;
+  font-size: 14px;
+}
+
+.handle {
+  font-size: 0.9em;
+  text-align: center;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+  width: 18px;
+  height: 100%;
+  line-height: 18px;
+  border: 1px solid #bbb;
+  background-color: #f1f1f1;
+}
+
+.handle.active {
+  background-color: grey;
+}
+
+.bar {
+  position: relative;
+  background: #ccc;
+  height: 100%;
+}
+
+.bar.bar-1 {
+  background: rgb(197, 197, 197);
+}
