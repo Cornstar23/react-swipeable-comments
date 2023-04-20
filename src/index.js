@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { SwipeableComments } from "./SwipeableComments.js";
-// import { loadRedditComments } from "./data/redditParser.js";
+import { loadRedditComments } from "./data/redditParser.js";
 
 const allComments = require("./data/comments.json");
 const parentId = "";
@@ -96,12 +96,12 @@ loadComments(allCommentsMap[parentId][0], initialComments);
 function App() {
   const [comments, setComments] = useState(initialComments);
   // useEffect(() => {
-  // const test = async () => {
-  //   const c = await loadRedditComments();
-  //   setComments(c.commentList);
-  // };
-  // test();
-  //   setComments(initialComments);
+  //   const test = async () => {
+  //     const c = await loadRedditComments();
+  //     setComments(c.commentList);
+  //   };
+  //   test();
+  //   // setComments(initialComments);
   // }, []);
 
   const getMoreComments = (pId, indexOfNextComments) => {
@@ -117,15 +117,17 @@ function App() {
   };
 
   return (
-    <div className="App">
       <SwipeableComments
         comments={comments}
-        moreCommentsMap={moreCommentsMap}
-        moreCommentRepliesMap={moreCommentRepliesMap}
-        getMoreComments={getMoreComments}
-        getMoreReplies={getMoreReplies}
+        // moreCommentsMap={moreCommentsMap}
+        // moreCommentRepliesMap={moreCommentRepliesMap}
+        // getMoreComments={getMoreComments}
+        // getMoreReplies={getMoreReplies}
+        moreCommentsMap={{}}
+        moreCommentRepliesMap={{}}
+        getMoreComments={() => {}}
+        getMoreReplies={() => {}}
       />
-    </div>
   );
 }
 
