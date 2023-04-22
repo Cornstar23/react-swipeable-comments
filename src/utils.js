@@ -1,5 +1,39 @@
+import { useEffect, useState } from "react";
 
-export function buildCommentsMap(sourceComments, maxLvl, maxDepth) {
+export function useLazyLoadedComments(comments, maxLevel = 2, maxDepth = 3) {
+  const [displayedComments, setDisplayedComments] = useState([]);
+  const [allCommentsMap, setAllCommentsMap] = useState({});
+  const [moreCommentsMap, setMoreCommentsMap] = useState({});
+  const [moreCommentRepliesMap, setMoreCommentRepliesMap] = useState({});
+
+  useEffect(() => {
+    const { allCommentsMap: am, moreCommentsMap: mcm, targetComments, moreCommentRepliesMap: mcrm } =
+      buildCommentsMap(comments, maxLevel, maxDepth);
+    const parentId = "";
+    setAllCommentsMap(am);
+    setMoreCommentsMap(mcm);
+    setDisplayedComments(targetComments);
+    setMoreCommentRepliesMap(mcrm);
+  }, [comments]);
+
+  function loadSiblingComments(parentId, indexOfNextComments) {
+    console.log("loading more comments");
+    setDisplayedComments([
+      ...displayedComments,
+      ...allCommentsMap[parentId][indexOfNextComments],
+    ]);
+  }
+
+  function loadChildComments(id) {
+    console.log("loading more replies: ", id);
+    const newComments = loadComments2(allCommentsMap, id, maxDepth);
+    setDisplayedComments([...displayedComments, ...newComments]);
+  }
+
+  return { displayedComments, loadSiblingComments, loadChildComments, moreCommentsMap, moreCommentRepliesMap };
+}
+
+function buildCommentsMap(sourceComments, maxLvl, maxDepth) {
   const levelCountMap = {};
   const allCommentsMap = {};
   const moreCommentsMap = {};
@@ -77,7 +111,7 @@ export function buildCommentsMap(sourceComments, maxLvl, maxDepth) {
   return { allCommentsMap, moreCommentsMap, targetComments, moreCommentRepliesMap };
 }
 
-export function loadComments2(allCommentsMap, id, maxDepth) {
+function loadComments2(allCommentsMap, id, maxDepth) {
   const targetComments = [];
 
   function loadCommentsRecursive2(

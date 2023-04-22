@@ -4,9 +4,10 @@ import virtualize from "./virtualizeWithChildren";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import "./styles.css";
 import Comment from "./Comment";
-import { buildCommentsMap, loadComments2 } from "./utils";
+import { useLazyLoadedComments } from "./utils";
+
+import "./styles.css";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
@@ -19,38 +20,19 @@ const styles = {
 export function SwipeableComments({ comments }) {
   const commentMap = {};
   const [hashIndex, setHashIndex] = useState({});
-  const [displayedComments, setDisplayedComments] = useState([]);
-  const [allCommentsMap, setAllCommentsMap] = useState({});
-  const [moreCommentsMap, setMoreCommentsMap] = useState({});
-  const [moreCommentRepliesMap, setMoreCommentRepliesMap] = useState({});
-
-  useEffect(() => {
-    const { allCommentsMap: am, moreCommentsMap: mcm, targetComments, moreCommentRepliesMap: mcrm } =
-      buildCommentsMap(comments, 5, 3);
-    const parentId = "";
-    setAllCommentsMap(am);
-    setMoreCommentsMap(mcm);
-    setDisplayedComments(targetComments);
-    setMoreCommentRepliesMap(mcrm);
-  }, [comments]);
+  const {
+    displayedComments,
+    loadChildComments,
+    loadSiblingComments,
+    moreCommentsMap,
+    moreCommentRepliesMap
+  } = useLazyLoadedComments(comments);
 
   const _setHashIndex = (id, index) => {
     setHashIndex({ ...hashIndex, [id]: index });
   };
 
-  function getMoreComments(pId, indexOfNextComments) {
-    console.log("loading more comments");
-    setDisplayedComments([
-      ...displayedComments,
-      ...allCommentsMap[pId][indexOfNextComments],
-    ]);
-  }
-
-  function getMoreReplies(id) {
-    console.log("loading more replies: ", id);
-    const newComments = loadComments2(allCommentsMap, id, 3);
-    setDisplayedComments([...displayedComments, ...newComments]);
-  }
+  console.log('moreCommentsMap', moreCommentsMap)
 
   const commentTree = (parentId, level, parentVisible) => {
     const currentIndex = hashIndex[parentId] || 0;
@@ -62,6 +44,7 @@ export function SwipeableComments({ comments }) {
       );
       commentMap[parentId] = commentsAtThisLevel;
     }
+    const currentId = commentsAtThisLevel[currentIndex]?.id;
 
     const commentsDivs = commentsAtThisLevel.map((comment, i) => (
       <Comment
@@ -73,7 +56,7 @@ export function SwipeableComments({ comments }) {
           displayedComments.filter((c) => c.parentId === comment.id).length ===
           0
         }
-        getMoreReplies={getMoreReplies}
+        getMoreReplies={loadChildComments}
         displayChildren={i + 2 > currentIndex && i - 2 < currentIndex}
         isVisible={parentVisible && i === currentIndex}
       >
@@ -130,20 +113,20 @@ export function SwipeableComments({ comments }) {
               >
                 <FontAwesomeIcon icon={faArrowRight} />
               </button>
-              {moreCommentsMap[commentsAtThisLevel[currentIndex].id] &&
+              {moreCommentsMap[currentId] &&
                 currentIndex === commentsAtThisLevel.length - 1 && (
                   <button
                     className="loadMoreComments"
                     onClick={() =>
-                      getMoreComments(
+                      loadSiblingComments(
                         parentId,
-                        moreCommentsMap[commentsAtThisLevel[currentIndex].id]
+                        moreCommentsMap[currentId]
                           .indexOfNextComments
                       )
                     }
                   >
                     {
-                      moreCommentsMap[commentsAtThisLevel[currentIndex].id]
+                      moreCommentsMap[currentId]
                         .toLoad
                     }{" "}
                     more...
