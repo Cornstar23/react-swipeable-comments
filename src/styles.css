@@ -4,19 +4,41 @@
   padding: 0;
 }
 
+html {
+  height: 100%;
+}
+
+html,
+body,
+#root {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+body, #root {
+  flex-grow: 1;
+}
+
 .App {
   font-family: sans-serif;
   margin: 0 auto;
   max-width: 600px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .App > div > div > .react-swipeable-view-container > div {
   border: 1px solid rgb(99, 99, 99);
   border-radius: 4px;
-  height: calc(100vh - 50px);
   background: #e6e6e6;
   margin: 0 10px;
   position: relative;
+}
+
+.App > div > div > .react-swipeable-view-container {
+  height: 0;
 }
 
 body {
@@ -34,12 +56,18 @@ body {
 }
 
 .swipeable-views {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
   transition: all 2s ease 1s;
   /* min-height: 2000px; */
 }
 
 .children-comments {
-  min-height: 100vh;
+  /* min-height: 100vh; */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .children-comments-scrolled {

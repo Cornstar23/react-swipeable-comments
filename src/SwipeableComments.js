@@ -138,6 +138,7 @@ export function SwipeableComments({ comments }) {
           )}
 
           <VirtualizeSwipeableViews
+            containerStyle={{ flexGrow: 1 }}
             onChangeIndex={(i) => {
               _setHashIndex(parentId, i);
             }}
