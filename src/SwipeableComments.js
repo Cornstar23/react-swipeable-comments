@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import "./styles.css";
 import Comment from "./Comment";
+import { buildCommentsMap, loadComments2 } from "./utils";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
@@ -14,158 +15,6 @@ const styles = {
     width: "calc(100% - 20px)",
   },
 };
-
-// MAX COMMENTS PER LEVEL
-const MAX = 5;
-// MAX COMMENT REPLIES PER COMMENT
-const MAX_DEPTH = 2;
-
-function buildCommentsMap(sourceComments) {
-  const levelCountMap = {};
-  const allCommentsMap = {};
-  const moreCommentsMap = {};
-  sourceComments.forEach((c) => {
-    levelCountMap[c.parentId] = (levelCountMap[c.parentId] || 0) + 1;
-    const level = Math.floor((levelCountMap[c.parentId] - 1) / MAX);
-
-    // TODO: Separate setting the moreCommentsMap
-    if ((levelCountMap[c.parentId] % MAX) / MAX === 0) {
-      const totalAtLevel = sourceComments.filter(
-        (c2) => c2.parentId === c.parentId
-      ).length;
-      const currentCount = (level + 1) * MAX;
-      const remainingAtLevel = totalAtLevel - currentCount;
-      if (remainingAtLevel !== 0) {
-        const toLoad = remainingAtLevel > MAX ? MAX : remainingAtLevel;
-        moreCommentsMap[c.id] = {
-          indexOfNextComments: level + 1,
-          toLoad,
-        };
-      }
-    }
-
-    if (!allCommentsMap[c.parentId]) {
-      allCommentsMap[c.parentId] = [];
-    }
-    if (!allCommentsMap[c.parentId][level]) {
-      allCommentsMap[c.parentId][level] = [];
-    }
-    allCommentsMap[c.parentId][level].push(c);
-  });
-  return { allCommentsMap, moreCommentsMap };
-}
-
-function loadComments(allCommentsMap, id) {
-  const targetComments = [];
-  const moreCommentRepliesMap = {};
-  if(!!allCommentsMap?.[id]?.[0]) {
-    loadCommentsRecursive(
-      allCommentsMap,
-      allCommentsMap[id][0],
-      targetComments,
-      moreCommentRepliesMap,
-      0,
-      true
-    );
-  }
-  return { targetComments, moreCommentRepliesMap };
-}
-
-function loadComments2(allCommentsMap, id) {
-  const targetComments = [];
-  if(!!allCommentsMap?.[id]?.[0]) {
-  loadCommentsRecursive2(
-    allCommentsMap,
-    allCommentsMap[id][0],
-    targetComments,
-    0,
-    true
-  );
-  }
-  return targetComments;
-}
-
-function loadCommentsRecursive(
-  allCommentsMap,
-  sourceComments,
-  targetComments,
-  moreCommentRepliesMap,
-  level,
-  saveComment
-) {
-  sourceComments.forEach((c) => {
-    if (saveComment) {
-      targetComments.push(c);
-    }
-    if (allCommentsMap[c.id]) {
-      if (level < MAX_DEPTH - 1) {
-        loadCommentsRecursive(
-          allCommentsMap,
-          allCommentsMap[c.id][0],
-          targetComments,
-          moreCommentRepliesMap,
-          level + 1,
-          saveComment
-        );
-      } else if (level === MAX_DEPTH - 1) {
-        moreCommentRepliesMap[c.id] = {
-          indexOfNextComments: level + 1,
-          numOfChildren: getChildrenDepth(allCommentsMap, c),
-        };
-        loadCommentsRecursive(
-          allCommentsMap,
-          allCommentsMap[c.id][0],
-          targetComments,
-          moreCommentRepliesMap,
-          0,
-          false
-        );
-      }
-    }
-  });
-}
-
-function loadCommentsRecursive2(
-  allCommentsMap,
-  sourceComments,
-  targetComments,
-  level,
-  saveComment
-) {
-  sourceComments.forEach((c) => {
-    if (saveComment) {
-      targetComments.push(c);
-    }
-    if (allCommentsMap[c.id]) {
-      if (level < MAX_DEPTH - 1) {
-        loadCommentsRecursive2(
-          allCommentsMap,
-          allCommentsMap[c.id][0],
-          targetComments,
-          level + 1,
-          saveComment
-        );
-      } else if (level === MAX_DEPTH - 1) {
-        loadCommentsRecursive2(
-          allCommentsMap,
-          allCommentsMap[c.id][0],
-          targetComments,
-          0,
-          false
-        );
-      }
-    }
-  });
-}
-
-function getChildrenDepth(allCommentsMap, comment) {
-  if (allCommentsMap[comment.id]) {
-    return (
-      1 + getChildrenDepth(allCommentsMap, allCommentsMap[comment.id][0][0])
-    );
-  }
-  return 0;
-}
 
 export function SwipeableComments({ comments }) {
   const commentMap = {};
@@ -176,10 +25,9 @@ export function SwipeableComments({ comments }) {
   const [moreCommentRepliesMap, setMoreCommentRepliesMap] = useState({});
 
   useEffect(() => {
-    const { allCommentsMap: am, moreCommentsMap: mcm } =
-      buildCommentsMap(comments);
+    const { allCommentsMap: am, moreCommentsMap: mcm, targetComments, moreCommentRepliesMap: mcrm } =
+      buildCommentsMap(comments, 5, 3);
     const parentId = "";
-    const { targetComments, moreCommentRepliesMap: mcrm } = loadComments(am, parentId);
     setAllCommentsMap(am);
     setMoreCommentsMap(mcm);
     setDisplayedComments(targetComments);
@@ -200,7 +48,7 @@ export function SwipeableComments({ comments }) {
 
   function getMoreReplies(id) {
     console.log("loading more replies: ", id);
-    const newComments = loadComments2(allCommentsMap, id);
+    const newComments = loadComments2(allCommentsMap, id, 3);
     setDisplayedComments([...displayedComments, ...newComments]);
   }
 
