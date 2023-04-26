@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import SwipeableViews from "react-swipeable-views";
 import virtualize from "./virtualizeWithChildren";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import Comment from "./Comment";
 import { useLazyLoadedComments } from "./utils";
 
@@ -17,7 +15,7 @@ const styles = {
   },
 };
 
-export function SwipeableComments({ comments }) {
+export function SwipeableComments({ comments, renderComment, renderRightArrow, renderLeftArrow }) {
   const commentMap = {};
   const [hashIndex, setHashIndex] = useState({});
   const {
@@ -31,8 +29,6 @@ export function SwipeableComments({ comments }) {
   const _setHashIndex = (id, index) => {
     setHashIndex({ ...hashIndex, [id]: index });
   };
-
-  console.log('moreCommentsMap', moreCommentsMap)
 
   const commentTree = (parentId, level, parentVisible) => {
     const currentIndex = hashIndex[parentId] || 0;
@@ -48,8 +44,9 @@ export function SwipeableComments({ comments }) {
 
     const commentsDivs = commentsAtThisLevel.map((comment, i) => (
       <Comment
+        renderComment={() => renderComment(comment)}
         key={comment.id}
-        comment={comment}
+        id={comment.id}
         level={level}
         moreCommentRepliesMap={moreCommentRepliesMap[comment.id]}
         isLastVisibleComment={
@@ -58,7 +55,6 @@ export function SwipeableComments({ comments }) {
         }
         getMoreReplies={loadChildComments}
         displayChildren={i + 2 > currentIndex && i - 2 < currentIndex}
-        isVisible={parentVisible && i === currentIndex}
       >
         {commentTree(
           comment.id,
@@ -81,7 +77,7 @@ export function SwipeableComments({ comments }) {
                 className={currentIndex === 0 ? "disabled" : "enabled"}
                 disabled={currentIndex === 0}
               >
-                <FontAwesomeIcon icon={faArrowLeft} />
+                {renderLeftArrow ? renderLeftArrow() : '<'}
               </button>
               <div className="comment-number">
                 {currentIndex + 1} of {commentsAtThisLevel.length}
@@ -111,7 +107,7 @@ export function SwipeableComments({ comments }) {
                     : "enabled"
                 }
               >
-                <FontAwesomeIcon icon={faArrowRight} />
+                {renderRightArrow ? renderRightArrow() : '>'}
               </button>
               {moreCommentsMap[currentId] &&
                 currentIndex === commentsAtThisLevel.length - 1 && (

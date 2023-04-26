@@ -1,7 +1,8 @@
 import React from 'react'
 
 const Comment = ({
-  comment: { author, id, text },
+  renderComment,
+  id,
   level,
   moreCommentRepliesMap,
   isLastVisibleComment,
@@ -15,7 +16,7 @@ const Comment = ({
       <div
         className={`${level === 0 ? ' comment-top' : ''} comment comment-body`}
       >
-        <b>{author}</b>: {text}
+        {renderComment()}
       </div>
       {isLastVisibleComment && moreCommentRepliesMap && (
         <div className="loadMoreRepliesDiv">
