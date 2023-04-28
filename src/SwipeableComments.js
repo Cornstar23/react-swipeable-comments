@@ -15,20 +15,25 @@ const styles = {
   },
 };
 
-export function SwipeableComments({ comments, renderComment, renderRightArrow, renderLeftArrow, hashIndex: hashIndexExternal, setHashIndex: setHashIndexExternal }) {
+export function SwipeableComments({
+  comments,
+  renderComment,
+  renderRightArrow,
+  renderLeftArrow,
+  valueMap: valueMapExternal,
+  setValueMap: setValueMapExternal }) {
   const commentMap = {};
-  const [hashIndexInternal, setHashIndexInternal] = useState({});
-  console.log('hashIndex', hashIndex)
+  const [valueMapInternal, setValueMapInternal] = useState({});
 
-  const controlled = hashIndexExternal && setHashIndexExternal;
+  const controlled = valueMapExternal && setValueMapExternal;
 
-  let hashIndex = hashIndexInternal;
-  let setHashIndex = setHashIndexInternal;
+  let valueMap = valueMapInternal;
+  let setValueMap = setValueMapInternal;
   if(controlled) {
-    hashIndex = hashIndexExternal;
-    setHashIndex = setHashIndexExternal;
+    valueMap = valueMapExternal;
+    setValueMap = setValueMapExternal;
   }
-  
+
   const {
     displayedComments,
     loadChildComments,
@@ -37,12 +42,12 @@ export function SwipeableComments({ comments, renderComment, renderRightArrow, r
     moreCommentRepliesMap
   } = useLazyLoadedComments(comments);
 
-  const _setHashIndex = (id, index) => {
-    setHashIndex({ ...hashIndex, [id]: index });
+  const _setValueMap = (id, index) => {
+    setValueMap({ ...valueMap, [id]: index });
   };
 
   const commentTree = (parentId, level, parentVisible) => {
-    const currentIndex = hashIndex[parentId] || 0;
+    const currentIndex = valueMap[parentId] || 0;
 
     let commentsAtThisLevel = commentMap[parentId];
     if (!commentsAtThisLevel) {
@@ -82,8 +87,8 @@ export function SwipeableComments({ comments, renderComment, renderRightArrow, r
             <div className="comment-header">
               <button
                 onClick={() => {
-                  const newIndex = (hashIndex[parentId] || 1) - 1;
-                  _setHashIndex(parentId, newIndex);
+                  const newIndex = (valueMap[parentId] || 1) - 1;
+                  _setValueMap(parentId, newIndex);
                 }}
                 className={currentIndex === 0 ? "disabled" : "enabled"}
                 disabled={currentIndex === 0}
@@ -100,16 +105,16 @@ export function SwipeableComments({ comments, renderComment, renderRightArrow, r
                 max={commentsAtThisLevel.length}
                 value={currentIndex + 1}
                 onMouseDown={() => console.log("test click")}
-                onChange={(e) => _setHashIndex(parentId, e.target.value - 1)}
+                onChange={(e) => _setValueMap(parentId, e.target.value - 1)}
                 className="slider"
                 id="myRange"
               />
 
               <button
                 onClick={() => {
-                  const newIndex = (hashIndex[parentId] || 0) + 1;
+                  const newIndex = (valueMap[parentId] || 0) + 1;
                   if (newIndex < commentsAtThisLevel.length) {
-                    _setHashIndex(parentId, newIndex);
+                    _setValueMap(parentId, newIndex);
                   }
                 }}
                 className={
@@ -147,9 +152,9 @@ export function SwipeableComments({ comments, renderComment, renderRightArrow, r
           <VirtualizeSwipeableViews
             containerStyle={{ flexGrow: 1 }}
             onChangeIndex={(i) => {
-              _setHashIndex(parentId, i);
+              _setValueMap(parentId, i);
             }}
-            index={hashIndex[parentId] || 0}
+            index={valueMap[parentId] || 0}
             slideCount={commentsDivs.length}
             overscanSlideBefore={2}
             overscanSlideAfter={2}

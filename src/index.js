@@ -9,7 +9,7 @@ const allComments = require("./data/comments.json");
 
 function App() {
   const [comments, setComments] = useState([]);
-  const [hashIndex, setHashIndex] = useState({});
+  const [valueMap, setValueMap] = useState({});
   
   useEffect(() => {
     // const test = async () => {
@@ -23,8 +23,8 @@ function App() {
 
   return (
       <SwipeableComments
-        hashIndex={hashIndex}
-        setHashIndex={setHashIndex}
+        valueMap={valueMap}
+        setValueMap={setValueMap}
         comments={comments}
         renderComment={(comment) => <div><b>{comment.author}</b>: {comment.text}</div>}
         renderLeftArrow={() => <FontAwesomeIcon icon={faArrowLeft} />}
