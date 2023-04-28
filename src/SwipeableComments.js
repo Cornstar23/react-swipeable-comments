@@ -15,9 +15,20 @@ const styles = {
   },
 };
 
-export function SwipeableComments({ comments, renderComment, renderRightArrow, renderLeftArrow }) {
+export function SwipeableComments({ comments, renderComment, renderRightArrow, renderLeftArrow, hashIndex: hashIndexExternal, setHashIndex: setHashIndexExternal }) {
   const commentMap = {};
-  const [hashIndex, setHashIndex] = useState({});
+  const [hashIndexInternal, setHashIndexInternal] = useState({});
+  console.log('hashIndex', hashIndex)
+
+  const controlled = hashIndexExternal && setHashIndexExternal;
+
+  let hashIndex = hashIndexInternal;
+  let setHashIndex = setHashIndexInternal;
+  if(controlled) {
+    hashIndex = hashIndexExternal;
+    setHashIndex = setHashIndexExternal;
+  }
+  
   const {
     displayedComments,
     loadChildComments,
