@@ -14,7 +14,7 @@
     "react": "16.8.6",
     "react-dom": "16.8.6",
     "react-resize-detector": "4.2.1",
-    "react-scripts": "3.0.1",
+    "react-scripts": "3.4.4",
     "react-slider": "0.11.2",
     "react-swipeable-views": "0.13.3"
   },
