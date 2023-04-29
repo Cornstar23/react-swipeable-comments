@@ -1,13 +1,19 @@
 {
-  "name": "@Cornstar23/react-swipeable-comments",
+  "name": "@jessecorns/react-swipeable-comments",
   "version": "1.0.0",
-  "description": "",
-  "keywords": [],
+  "description": "Component to view nested comments in a single column allowing users to view more comments by swiping.",
   "main": "src/SwipeableComments.jsx",
+  "keywords": ["react", "comments", "swipeable"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Cornstar23/react-swipeable-comments.git"
+  },
   "dependencies": {
     "react": "16.8.6",
     "react-swipeable-views": "0.13.3"
   },
+  "author": "Cornstar23",
+  "license": "ISC",
   "browserslist": [
     ">0.2%",
     "not dead",
