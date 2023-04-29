@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import SwipeableViews from "react-swipeable-views";
-import virtualize from "./virtualizeWithChildren";
 
+import virtualize from "./virtualizeWithChildren";
 import Comment from "./Comment";
 import { useLazyLoadedComments } from "./utils";
 
