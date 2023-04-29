@@ -1,25 +1,3 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  height: 100%;
-  background: #232323;
-}
-
-html,
-body,
-#root {
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-}
-
-body, #root {
-  flex-grow: 1;
-}
 
 .swipeable-comments {
   font-family: sans-serif;
@@ -47,11 +25,6 @@ body {
   overflow-y: hidden;
 }
 
-/* .react-swipeable-view-container:first-child {
-
-    background: #ff0000;
-  
-} */
 
 .comments {
   transition: all 1s ease-in-out 1s;
