@@ -169,5 +169,5 @@ export function SwipeableComments({
     );
   };
 
-  return <div className="App">{commentTree("", 0, true)}</div>;
+  return <div className="swipeable-comments">{commentTree("", 0, true)}</div>;
 }

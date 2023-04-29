@@ -6,6 +6,7 @@
 
 html {
   height: 100%;
+  background: #232323;
 }
 
 html,
@@ -20,7 +21,7 @@ body, #root {
   flex-grow: 1;
 }
 
-.App {
+.swipeable-comments {
   font-family: sans-serif;
   width: clamp(300px, 95vw, 800px);
 
@@ -30,15 +31,15 @@ body, #root {
   flex-direction: column;
 }
 
-.App > div > div > .react-swipeable-view-container > div {
-  border: 1px solid rgb(99, 99, 99);
+.swipeable-comments > div > div > .react-swipeable-view-container > div {
+  border: 1px solid rgb(194, 194, 194);
   border-radius: 4px;
-  background: #e6e6e6;
+  background: #232323;
   margin: 0 10px;
   position: relative;
 }
 
-.App > div > div > .react-swipeable-view-container {
+.swipeable-comments > div > div > .react-swipeable-view-container {
   height: 0;
 }
 
@@ -60,7 +61,7 @@ body {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  transition: all 2s ease 1s;
+  /* transition: all 2s ease 1s; */
   /* min-height: 2000px; */
 }
 
@@ -84,7 +85,8 @@ body {
 
 .comment-body {
   padding: 1rem;
-  background: #fff;
+  color: #dcdcdc;
+  background: #2c2c2c;
   z-index: 100;
 }
 
