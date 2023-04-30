@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import SwipeableViews from "react-swipeable-views";
+import SwipeableViews from "react-swipeable-views"
 
 import virtualize from "./virtualizeWithChildren";
 import Comment from "./Comment";
