@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import SwipeableViews from "react-swipeable-views"
+import React, { useState } from 'react'
+import SwipeableViews from 'react-swipeable-views'
 
-import virtualize from "./virtualizeWithChildren";
-import Comment from "./Comment";
-import { useLazyLoadedComments } from "./utils";
+import virtualize from './virtualizeWithChildren'
+import Comment from './Comment'
+import { useLazyLoadedComments } from './utils'
 
-import "./styles.css";
+import './styles.css'
 
-const VirtualizeSwipeableViews = virtualize(SwipeableViews);
+const VirtualizeSwipeableViews = virtualize(SwipeableViews)
 
 const styles = {
   slideContainer: {
-    width: "calc(100% - 20px)",
+    width: 'calc(100% - 20px)',
   },
-};
+}
 
 function SwipeableComments({
   comments,
@@ -21,17 +21,18 @@ function SwipeableComments({
   renderRightArrow,
   renderLeftArrow,
   valueMap: valueMapExternal,
-  setValueMap: setValueMapExternal }) {
-  const commentMap = {};
-  const [valueMapInternal, setValueMapInternal] = useState({});
+  setValueMap: setValueMapExternal,
+}) {
+  const commentMap = {}
+  const [valueMapInternal, setValueMapInternal] = useState({})
 
-  const controlled = valueMapExternal && setValueMapExternal;
+  const controlled = valueMapExternal && setValueMapExternal
 
-  let valueMap = valueMapInternal;
-  let setValueMap = setValueMapInternal;
-  if(controlled) {
-    valueMap = valueMapExternal;
-    setValueMap = setValueMapExternal;
+  let valueMap = valueMapInternal
+  let setValueMap = setValueMapInternal
+  if (controlled) {
+    valueMap = valueMapExternal
+    setValueMap = setValueMapExternal
   }
 
   const {
@@ -39,24 +40,24 @@ function SwipeableComments({
     loadChildComments,
     loadSiblingComments,
     moreCommentsMap,
-    moreCommentRepliesMap
-  } = useLazyLoadedComments(comments);
+    moreCommentRepliesMap,
+  } = useLazyLoadedComments(comments)
 
   const _setValueMap = (id, index) => {
-    setValueMap({ ...valueMap, [id]: index });
-  };
+    setValueMap({ ...valueMap, [id]: index })
+  }
 
   const commentTree = (parentId, level, parentVisible) => {
-    const currentIndex = valueMap[parentId] || 0;
+    const currentIndex = valueMap[parentId] || 0
 
-    let commentsAtThisLevel = commentMap[parentId];
+    let commentsAtThisLevel = commentMap[parentId]
     if (!commentsAtThisLevel) {
       commentsAtThisLevel = displayedComments.filter(
-        (c) => c.parentId === parentId
-      );
-      commentMap[parentId] = commentsAtThisLevel;
+        (c) => c.parentId === parentId,
+      )
+      commentMap[parentId] = commentsAtThisLevel
     }
-    const currentId = commentsAtThisLevel[currentIndex]?.id;
+    const currentId = commentsAtThisLevel[currentIndex]?.id
 
     const commentsDivs = commentsAtThisLevel.map((comment, i) => (
       <Comment
@@ -75,10 +76,10 @@ function SwipeableComments({
         {commentTree(
           comment.id,
           level + 1,
-          parentVisible && i === currentIndex
+          parentVisible && i === currentIndex,
         )}
       </Comment>
-    ));
+    ))
 
     return (
       commentsDivs.length > 0 && (
@@ -87,10 +88,10 @@ function SwipeableComments({
             <div className="comment-header">
               <button
                 onClick={() => {
-                  const newIndex = (valueMap[parentId] || 1) - 1;
-                  _setValueMap(parentId, newIndex);
+                  const newIndex = (valueMap[parentId] || 1) - 1
+                  _setValueMap(parentId, newIndex)
                 }}
-                className={currentIndex === 0 ? "disabled" : "enabled"}
+                className={currentIndex === 0 ? 'disabled' : 'enabled'}
                 disabled={currentIndex === 0}
               >
                 {renderLeftArrow ? renderLeftArrow() : '<'}
@@ -104,7 +105,7 @@ function SwipeableComments({
                 min="1"
                 max={commentsAtThisLevel.length}
                 value={currentIndex + 1}
-                onMouseDown={() => console.log("test click")}
+                onMouseDown={() => console.log('test click')}
                 onChange={(e) => _setValueMap(parentId, e.target.value - 1)}
                 className="slider"
                 id="myRange"
@@ -112,15 +113,15 @@ function SwipeableComments({
 
               <button
                 onClick={() => {
-                  const newIndex = (valueMap[parentId] || 0) + 1;
+                  const newIndex = (valueMap[parentId] || 0) + 1
                   if (newIndex < commentsAtThisLevel.length) {
-                    _setValueMap(parentId, newIndex);
+                    _setValueMap(parentId, newIndex)
                   }
                 }}
                 className={
                   currentIndex === commentsAtThisLevel.length - 1
-                    ? "disabled"
-                    : "enabled"
+                    ? 'disabled'
+                    : 'enabled'
                 }
               >
                 {renderRightArrow ? renderRightArrow() : '>'}
@@ -132,16 +133,11 @@ function SwipeableComments({
                     onClick={() =>
                       loadSiblingComments(
                         parentId,
-                        moreCommentsMap[currentId]
-                          .indexOfNextComments
+                        moreCommentsMap[currentId].indexOfNextComments,
                       )
                     }
                   >
-                    {
-                      moreCommentsMap[currentId]
-                        .toLoad
-                    }{" "}
-                    more...
+                    {moreCommentsMap[currentId].toLoad} more...
                   </button>
                 )}
             </div>
@@ -152,7 +148,7 @@ function SwipeableComments({
           <VirtualizeSwipeableViews
             containerStyle={{ flexGrow: 1 }}
             onChangeIndex={(i) => {
-              _setValueMap(parentId, i);
+              _setValueMap(parentId, i)
             }}
             index={valueMap[parentId] || 0}
             slideCount={commentsDivs.length}
@@ -166,10 +162,10 @@ function SwipeableComments({
           </VirtualizeSwipeableViews>
         </div>
       )
-    );
-  };
+    )
+  }
 
-  return <div className="swipeable-comments">{commentTree("", 0, true)}</div>;
+  return <div className="swipeable-comments">{commentTree('', 0, true)}</div>
 }
 
-export default SwipeableComments;
+export default SwipeableComments
