@@ -81,21 +81,32 @@ function SwipeableComments({
       </Comment>
     ))
 
+    const chosenLeftArrow = renderLeftArrow ? (
+      renderLeftArrow()
+    ) : (
+      <button>{'<'}</button>
+    )
+    const chosenRightArrow = renderRightArrow ? (
+      renderRightArrow()
+    ) : (
+      <button>{'>'}</button>
+    )
+
     return (
       commentsDivs.length > 0 && (
         <div className="children-comments">
           {commentsAtThisLevel.length > 1 ? (
             <div className="comment-header">
-              <button
-                onClick={() => {
-                  const newIndex = (valueMap[parentId] || 1) - 1
-                  _setValueMap(parentId, newIndex)
-                }}
-                className={currentIndex === 0 ? 'disabled' : 'enabled'}
-                disabled={currentIndex === 0}
-              >
-                {renderLeftArrow ? renderLeftArrow() : '<'}
-              </button>
+              <React.Fragment>
+                {React.cloneElement(chosenLeftArrow, {
+                  onClick: () => {
+                    const newIndex = (valueMap[parentId] || 1) - 1
+                    _setValueMap(parentId, newIndex)
+                  },
+                  className: currentIndex === 0 ? 'disabled' : 'enabled',
+                  disabled: currentIndex === 0,
+                })}
+              </React.Fragment>
               <div className="comment-number">
                 {currentIndex + 1} of {commentsAtThisLevel.length}
               </div>
@@ -110,22 +121,20 @@ function SwipeableComments({
                 className="slider"
                 id="myRange"
               />
-
-              <button
-                onClick={() => {
-                  const newIndex = (valueMap[parentId] || 0) + 1
-                  if (newIndex < commentsAtThisLevel.length) {
-                    _setValueMap(parentId, newIndex)
-                  }
-                }}
-                className={
-                  currentIndex === commentsAtThisLevel.length - 1
-                    ? 'disabled'
-                    : 'enabled'
-                }
-              >
-                {renderRightArrow ? renderRightArrow() : '>'}
-              </button>
+              <React.Fragment>
+                {React.cloneElement(chosenRightArrow, {
+                  onClick: () => {
+                    const newIndex = (valueMap[parentId] || 0) + 1
+                    if (newIndex < commentsAtThisLevel.length) {
+                      _setValueMap(parentId, newIndex)
+                    }
+                  },
+                  className:
+                    currentIndex === commentsAtThisLevel.length - 1
+                      ? 'disabled'
+                      : 'enabled',
+                })}
+              </React.Fragment>
               {moreCommentsMap[currentId] &&
                 currentIndex === commentsAtThisLevel.length - 1 && (
                   <button
