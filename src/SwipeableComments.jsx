@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react'
 import SwipeableViews from 'react-swipeable-views'
 
@@ -11,7 +12,7 @@ const VirtualizeSwipeableViews = virtualize(SwipeableViews)
 
 const styles = {
   slideContainer: {
-    width: 'calc(100% - 20px)',
+    width: 'calc(100% - 0px)',
   },
 }
 
@@ -61,7 +62,12 @@ function SwipeableComments({
 
     const commentsDivs = commentsAtThisLevel.map((comment, i) => (
       <Comment
-        renderComment={() => renderComment(comment)}
+        renderComment={() =>
+          renderComment({
+            ...comment,
+            hasChildren: !!commentMap[comment.id].length,
+          })
+        }
         key={comment.id}
         id={comment.id}
         level={level}
