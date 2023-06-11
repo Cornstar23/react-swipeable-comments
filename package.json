@@ -1,6 +1,6 @@
 {
   "name": "@jessecorns/react-swipeable-comments",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Component to view nested comments in a single column allowing users to view more comments by swiping.",
   "author": "Jesse Corns",
   "keywords": [
@@ -31,7 +31,9 @@
   },
   "dependencies": {
     "prop-types": "^15.8.1",
-    "react-swipeable-views": "^0.14.0"
+    "react-swipeable-views-core": "^0.14.0",
+    "react-swipeable-views-utils": "^0.14.0",
+    "warning": "^4.0.1"
   },
   "peerDependencies": {
     "react": "^18.2.0",

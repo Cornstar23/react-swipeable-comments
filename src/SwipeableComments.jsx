@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
-import SwipeableViews from 'react-swipeable-views'
 
 import virtualize from './virtualizeWithChildren'
 import Comment from './Comment'
 import { useLazyLoadedComments } from './utils'
 
 import './styles.css'
+import SwipeableViews from './SwipeableViews'
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews)
 

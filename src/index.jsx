@@ -1,3 +1,6 @@
-import SwipeableComments from './SwipeableComments';
+import SwipeableComments from './SwipeableComments'
+export { default as SwipeableViews } from './SwipeableViews'
 
-export default SwipeableComments;
+export { default as virtualize } from './virtualizeWithChildren'
+
+export default SwipeableComments
