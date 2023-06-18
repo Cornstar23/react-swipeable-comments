@@ -257,6 +257,7 @@ class SwipeableViews extends React.Component {
       heightLatest: 0,
       // Let the render method that we are going to display the same slide than previously.
       displaySameSlide: true,
+      setIndexCurrent: this.setIndexCurrent.bind(this),
     }
     this.setIndexCurrent(props.index)
   }
@@ -316,22 +317,37 @@ class SwipeableViews extends React.Component {
       }
     }
   }
+  componentWillUnmount() {
+    this.transitionListener.remove()
+    this.touchMoveListener.remove()
+    clearTimeout(this.firstRenderTimeout)
+    this.setState()
+  }
 
-  // eslint-disable-next-line camelcase,react/sort-comp
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, prevState) {
     const { index } = nextProps
 
-    if (typeof index === 'number' && index !== this.props.index) {
+    if (typeof index === 'number' && index !== prevState.index) {
       if (process.env.NODE_ENV !== 'production') {
         checkIndexBounds(nextProps)
       }
 
-      this.setIndexCurrent(index)
-      this.setState({
-        // If true, we are going to change the children. We shoudn't animate it.
-        displaySameSlide: getDisplaySameSlide(this.props, nextProps),
+      if (!prevState.children) {
+        prevState = { ...prevState, children: [] }
+      }
+
+      return {
+        ...nextProps,
+        displaySameSlide: getDisplaySameSlide(prevState, nextProps),
         indexLatest: index,
-      })
+        model: prevState.setIndexCurrent(index),
+      }
+    }
+
+    return {
+      ...nextProps,
+      indexLatest: index,
+      setIndexCurrent: prevState.setIndexCurrent,
     }
   }
 

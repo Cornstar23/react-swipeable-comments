@@ -1,10 +1,6 @@
-import React, { PureComponent } from "react";
-import * as PropTypes from 'prop-types'
-
-function mod(n, m) {
-  const q = n % m;
-  return q < 0 ? q + m : q;
-}
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { mod } from 'react-swipeable-views-core';
 
 export default function virtualize(MyComponent) {
   class Virtualize extends PureComponent {
@@ -12,7 +8,11 @@ export default function virtualize(MyComponent) {
 
     constructor(props) {
       super(props);
-      this.state.index = props.index || 0;
+      const index = props.index || 0;
+      this.state = {
+        index,
+        ...this.getWindowState(index),
+      };
     }
 
     /**
@@ -26,24 +26,29 @@ export default function virtualize(MyComponent) {
      */
     state = {};
 
-    componentWillMount() {
-      this.setWindow(this.state.index);
-    }
-
-    componentWillReceiveProps(nextProps) {
-      const { index, slideCount } = nextProps;
+    // eslint-disable-next-line camelcase,react/sort-comp
+    getSnapshotBeforeUpdate(prevProps) {
+      const { index, slideCount } = this.props;
 
       if (
-        (typeof index === "number" && index !== this.props.index) ||
+        (typeof index === 'number' && index !== prevProps.index) ||
         slideCount !== this.props.slideCount
-      ) {
-        const indexDiff = index - this.props.index;
-        this.setIndex(
+        ) {
+        const indexDiff = index - prevProps.index;
+        return {
           index,
-          this.state.indexContainer + indexDiff,
           indexDiff,
+          indexContainer: this.state.indexContainer + indexDiff,
           slideCount
-        );
+        };
+      }
+      return null;
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+      if (snapshot) {
+        const { index, indexContainer, indexDiff, slideCount } = snapshot;
+        this.setIndex(index, indexContainer, indexDiff, slideCount);
       }
     }
 
@@ -56,16 +61,16 @@ export default function virtualize(MyComponent) {
         index,
         indexContainer,
         indexStart: this.state.indexStart,
-        indexStop: this.state.indexStop
+        indexStop: this.state.indexStop,
       };
-
-      const slideCountIncreased = slideCount > this.props.slideCount;
+      
+      const slideCountIncreased = slideCount > this.props.slideCount;    
 
       // We are going forward, let's render one more slide ahead.
       if (
         (indexDiff > 0 &&
-          (!slideCount || nextState.indexStop < slideCount - 1)) ||
-        slideCountIncreased
+        (!this.props.slideCount || nextState.indexStop < this.props.slideCount - 1) ||
+        slideCountIncreased)
       ) {
         nextState.indexStop += 1;
       }
@@ -86,7 +91,7 @@ export default function virtualize(MyComponent) {
       this.setState(nextState);
     }
 
-    setWindow(index = this.state.index) {
+    getWindowState(index) {
       const { slideCount } = this.props;
 
       let beforeAhead = this.props.overscanSlideBefore;
@@ -102,14 +107,20 @@ export default function virtualize(MyComponent) {
         }
       }
 
-      this.setState({
+      return {
         indexContainer: beforeAhead,
         indexStart: index - beforeAhead,
-        indexStop: index + afterAhead
+        indexStop: index + afterAhead,
+      };
+    }
+
+    setWindow(index = this.state.index) {
+      this.setState({
+        ...this.getWindowState(index),
       });
     }
 
-    handleChangeIndex = (indexContainer, indexLatest) => {
+    handleChangeIndex = (indexContainer, indexLatest, meta) => {
       const { slideCount, onChangeIndex } = this.props;
 
       const indexDiff = indexContainer - indexLatest;
@@ -125,7 +136,7 @@ export default function virtualize(MyComponent) {
       }
 
       if (onChangeIndex) {
-        onChangeIndex(index, this.state.index);
+        onChangeIndex(index, this.state.index, meta);
       }
     };
 
@@ -216,7 +227,7 @@ export default function virtualize(MyComponent) {
     /**
      * When set, it's adding a limit to the number of slide: [0, slideCount].
      */
-    slideCount: PropTypes.number
+    slideCount: PropTypes.number,
     /**
      * Responsible for rendering a slide given an index.
      * ({ index: number }): node.
