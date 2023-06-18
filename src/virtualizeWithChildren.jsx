@@ -196,16 +196,6 @@ export default function virtualize(MyComponent) {
     /**
      * @ignore
      */
-    children: (props, propName) => {
-      if (props[propName] !== undefined) {
-        return new Error("The children property isn't supported.");
-      }
-
-      return null;
-    },
-    /**
-     * @ignore
-     */
     index: PropTypes.number,
     /**
      * @ignore
