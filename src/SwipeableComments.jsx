@@ -26,6 +26,7 @@ function SwipeableComments({
 }) {
   const commentMap = {}
   const [valueMapInternal, setValueMapInternal] = useState({})
+  const [isMouseDown, setIsMouseDown] = useState(false)
 
   const controlled = valueMapExternal && setValueMapExternal
 
@@ -122,7 +123,10 @@ function SwipeableComments({
                 min="1"
                 max={commentsAtThisLevel.length}
                 value={currentIndex + 1}
-                onMouseDown={() => console.log('test click')}
+                onTouchStart={() => setIsMouseDown(true)}
+                onTouchEnd={() => setIsMouseDown(false)}
+                onMouseDown={() => setIsMouseDown(true)}
+                onMouseUp={() => setIsMouseDown(false)}
                 onChange={(e) => _setValueMap(parentId, e.target.value - 1)}
                 className="slider"
                 id="myRange"
@@ -172,6 +176,8 @@ function SwipeableComments({
             slideStyle={level === 0 ? styles.slideContainer : null}
             resistance
             className="swipeable-views"
+            enableMouseEvents={!isMouseDown}
+            disabled={isMouseDown}
           >
             {commentsDivs}
           </VirtualizeSwipeableViews>

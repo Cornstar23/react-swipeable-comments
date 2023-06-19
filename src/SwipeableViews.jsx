@@ -321,12 +321,12 @@ class SwipeableViews extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.disabled !== prevProps.disabled) {
-      // The disabled prop has changed
-      if (this.props.disabled) {
-        // If disabled is now true, we could stop the swipe
-        this.started = false
-      }
+    // Any toggle of disabled or enableMouseEvents will stop the swiping
+    if (
+      this.props.disabled !== prevProps.disabled ||
+      this.props.enableMouseEvents !== prevProps.enableMouseEvents
+    ) {
+      this.started = false
     }
   }
   componentWillUnmount() {
@@ -643,7 +643,6 @@ class SwipeableViews extends React.Component {
   }
 
   handleMouseUp = (event) => {
-    console.log('handleMouseUp')
     if (this.props.onMouseUp) {
       this.props.onMouseUp(event)
     }
@@ -662,7 +661,6 @@ class SwipeableViews extends React.Component {
   }
 
   handleMouseMove = (event) => {
-    console.log('mousemove')
     if (this.props.onMouseMove) {
       this.props.onMouseMove(event)
     }
