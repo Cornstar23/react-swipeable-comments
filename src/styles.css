@@ -11,6 +11,7 @@
   margin: 0 0px; /* left/right needs to correspond to slideContainer width */
   position: relative;
   overflow: auto !important;
+  scrollbar-gutter: stable both-edges;
 }
 
 .swipeable-comments > div > div > .react-swipeable-view-container {
