@@ -8,6 +8,19 @@ import {
   getDisplaySameSlide,
 } from 'react-swipeable-views-core'
 
+// Place this at the top of your entry point file
+const suppressWarning = (message) => {
+  const originalConsoleError = console.error
+  console.error = (...args) => {
+    if (typeof args[0] === 'string' && args[0].includes(message)) {
+      return
+    }
+    originalConsoleError(...args)
+  }
+}
+
+suppressWarning('UNSAFE_componentWillReceiveProps')
+
 function addEventListener(node, event, handler, options) {
   node.addEventListener(event, handler, options)
   return {
@@ -257,7 +270,6 @@ class SwipeableViews extends React.Component {
       heightLatest: 0,
       // Let the render method that we are going to display the same slide than previously.
       displaySameSlide: true,
-      setIndexCurrent: this.setIndexCurrent.bind(this),
     }
     this.setIndexCurrent(props.index)
   }
@@ -324,30 +336,21 @@ class SwipeableViews extends React.Component {
     this.setState()
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  // eslint-disable-next-line camelcase,react/sort-comp
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { index } = nextProps
 
-    if (typeof index === 'number' && index !== prevState.index) {
+    if (typeof index === 'number' && index !== this.props.index) {
       if (process.env.NODE_ENV !== 'production') {
         checkIndexBounds(nextProps)
       }
 
-      if (!prevState.children) {
-        prevState = { ...prevState, children: [] }
-      }
-
-      return {
-        ...nextProps,
-        displaySameSlide: getDisplaySameSlide(prevState, nextProps),
+      this.setIndexCurrent(index)
+      this.setState({
+        // If true, we are going to change the children. We shoudn't animate it.
+        displaySameSlide: getDisplaySameSlide(this.props, nextProps),
         indexLatest: index,
-        model: prevState.setIndexCurrent(index),
-      }
-    }
-
-    return {
-      ...nextProps,
-      indexLatest: index,
-      setIndexCurrent: prevState.setIndexCurrent,
+      })
     }
   }
 
