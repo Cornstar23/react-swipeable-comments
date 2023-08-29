@@ -40,19 +40,21 @@ function SwipeableComments({
   const { displayedComments, loadChildComments, loadSiblingComments, moreCommentsMap, moreCommentRepliesMap } =
     useLazyLoadedComments(comments)
 
-  const _setValueMap = (id, index) => {
-    setValueMap({ ...valueMap, [id]: index })
+  const _setValueMap = (parentId, commentId) => {
+    setValueMap((prevMap) => ({ ...prevMap, [parentId]: commentId }))
   }
 
   const commentTree = (parentId, level, parentVisible) => {
-    const currentIndex = valueMap[parentId] || 0
+    const currentId = valueMap[parentId]
 
     let commentsAtThisLevel = commentMap[parentId]
     if (!commentsAtThisLevel) {
       commentsAtThisLevel = displayedComments.filter((c) => c.parentId === parentId)
       commentMap[parentId] = commentsAtThisLevel
     }
-    const currentId = commentsAtThisLevel[currentIndex]?.id
+    const currentComment = commentsAtThisLevel.find((c) => c.id === currentId)
+    let currentIndex = commentsAtThisLevel.indexOf(currentComment)
+    currentIndex = currentIndex < 0 ? 0 : currentIndex
 
     const commentsDivs = commentsAtThisLevel.map((comment, i) => (
       <Comment
@@ -85,8 +87,10 @@ function SwipeableComments({
               <React.Fragment>
                 {React.cloneElement(chosenLeftArrow, {
                   onClick: () => {
-                    const newIndex = (valueMap[parentId] || 1) - 1
-                    _setValueMap(parentId, newIndex)
+                    const previousComment = commentsAtThisLevel[currentIndex - 1]
+                    if (previousComment) {
+                      _setValueMap(parentId, previousComment.id)
+                    }
                   },
                   className: currentIndex === 0 ? 'disabled' : 'enabled',
                   disabled: currentIndex === 0,
@@ -105,16 +109,22 @@ function SwipeableComments({
                 onTouchEnd={() => setIsMouseDown(false)}
                 onMouseDown={() => setIsMouseDown(true)}
                 onMouseUp={() => setIsMouseDown(false)}
-                onChange={(e) => _setValueMap(parentId, e.target.value - 1)}
+                onChange={(e) => {
+                  const newIndex = e.target.value - 1
+                  const selectedComment = commentsAtThisLevel[newIndex]
+                  if (selectedComment) {
+                    _setValueMap(parentId, selectedComment.id)
+                  }
+                }}
                 className="slider"
                 id="myRange"
               />
               <React.Fragment>
                 {React.cloneElement(chosenRightArrow, {
                   onClick: () => {
-                    const newIndex = (valueMap[parentId] || 0) + 1
-                    if (newIndex < commentsAtThisLevel.length) {
-                      _setValueMap(parentId, newIndex)
+                    const nextComment = commentsAtThisLevel[currentIndex + 1]
+                    if (nextComment) {
+                      _setValueMap(parentId, nextComment.id)
                     }
                   },
                   className: currentIndex === commentsAtThisLevel.length - 1 ? 'disabled' : 'enabled',
@@ -135,10 +145,13 @@ function SwipeableComments({
 
           <VirtualizeSwipeableViews
             containerStyle={{ flexGrow: 1 }}
-            onChangeIndex={(i) => {
-              _setValueMap(parentId, i)
+            onChangeIndex={(newIndex) => {
+              const selectedComment = commentsAtThisLevel[newIndex]
+              if (selectedComment) {
+                _setValueMap(parentId, selectedComment.id)
+              }
             }}
-            index={valueMap[parentId] || 0}
+            index={currentIndex}
             slideCount={commentsDivs.length}
             overscanSlideBefore={2}
             overscanSlideAfter={2}
