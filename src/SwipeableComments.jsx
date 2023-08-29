@@ -37,13 +37,8 @@ function SwipeableComments({
     setValueMap = setValueMapExternal
   }
 
-  const {
-    displayedComments,
-    loadChildComments,
-    loadSiblingComments,
-    moreCommentsMap,
-    moreCommentRepliesMap,
-  } = useLazyLoadedComments(comments)
+  const { displayedComments, loadChildComments, loadSiblingComments, moreCommentsMap, moreCommentRepliesMap } =
+    useLazyLoadedComments(comments)
 
   const _setValueMap = (id, index) => {
     setValueMap({ ...valueMap, [id]: index })
@@ -54,9 +49,7 @@ function SwipeableComments({
 
     let commentsAtThisLevel = commentMap[parentId]
     if (!commentsAtThisLevel) {
-      commentsAtThisLevel = displayedComments.filter(
-        (c) => c.parentId === parentId,
-      )
+      commentsAtThisLevel = displayedComments.filter((c) => c.parentId === parentId)
       commentMap[parentId] = commentsAtThisLevel
     }
     const currentId = commentsAtThisLevel[currentIndex]?.id
@@ -73,31 +66,16 @@ function SwipeableComments({
         id={comment.id}
         level={level}
         moreCommentRepliesMap={moreCommentRepliesMap[comment.id]}
-        isLastVisibleComment={
-          displayedComments.filter((c) => c.parentId === comment.id).length ===
-          0
-        }
+        isLastVisibleComment={displayedComments.filter((c) => c.parentId === comment.id).length === 0}
         getMoreReplies={loadChildComments}
         displayChildren={i + 2 > currentIndex && i - 2 < currentIndex}
       >
-        {commentTree(
-          comment.id,
-          level + 1,
-          parentVisible && i === currentIndex,
-        )}
+        {commentTree(comment.id, level + 1, parentVisible && i === currentIndex)}
       </Comment>
     ))
 
-    const chosenLeftArrow = renderLeftArrow ? (
-      renderLeftArrow()
-    ) : (
-      <button>{'<'}</button>
-    )
-    const chosenRightArrow = renderRightArrow ? (
-      renderRightArrow()
-    ) : (
-      <button>{'>'}</button>
-    )
+    const chosenLeftArrow = renderLeftArrow ? renderLeftArrow() : <button>{'<'}</button>
+    const chosenRightArrow = renderRightArrow ? renderRightArrow() : <button>{'>'}</button>
 
     return (
       commentsDivs.length > 0 && (
@@ -139,26 +117,17 @@ function SwipeableComments({
                       _setValueMap(parentId, newIndex)
                     }
                   },
-                  className:
-                    currentIndex === commentsAtThisLevel.length - 1
-                      ? 'disabled'
-                      : 'enabled',
+                  className: currentIndex === commentsAtThisLevel.length - 1 ? 'disabled' : 'enabled',
                 })}
               </React.Fragment>
-              {moreCommentsMap[currentId] &&
-                currentIndex === commentsAtThisLevel.length - 1 && (
-                  <button
-                    className="loadMoreComments"
-                    onClick={() =>
-                      loadSiblingComments(
-                        parentId,
-                        moreCommentsMap[currentId].indexOfNextComments,
-                      )
-                    }
-                  >
-                    {moreCommentsMap[currentId].toLoad} more...
-                  </button>
-                )}
+              {moreCommentsMap[currentId] && currentIndex === commentsAtThisLevel.length - 1 && (
+                <button
+                  className="loadMoreComments"
+                  onClick={() => loadSiblingComments(parentId, moreCommentsMap[currentId].indexOfNextComments)}
+                >
+                  {moreCommentsMap[currentId].toLoad} more...
+                </button>
+              )}
             </div>
           ) : (
             <div className="spacer" />
