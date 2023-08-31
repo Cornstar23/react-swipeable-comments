@@ -91,6 +91,10 @@ body {
   margin: 0;
 } */
 
+.comment-bottom {
+  margin-bottom: 2rem;
+}
+
 .spacer {
   height: 10px;
   background: #424242;

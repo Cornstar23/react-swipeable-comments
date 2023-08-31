@@ -9,11 +9,13 @@ const Comment = ({
   style,
   children,
 }) => {
+  let commentClass = level === 0 ? ' comment-top' : ''
+  if (children === false) {
+    commentClass += ' comment-bottom'
+  }
   return (
     <div className="comments" style={style}>
-      <div
-        className={`${level === 0 ? ' comment-top' : ''} comment comment-body`}
-      >
+      <div className={`${commentClass} comment comment-body`}>
         {renderComment()}
       </div>
       {isLastVisibleComment && moreCommentRepliesMap && (
